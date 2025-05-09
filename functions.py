@@ -4,7 +4,7 @@ import requests
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 load_dotenv()
-# API_KEY = "U8DWLP7NIQJDT6XL"
+
 DATA_FOLDER = "data"
 
 os.makedirs(DATA_FOLDER, exist_ok=True)
