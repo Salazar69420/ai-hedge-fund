@@ -1,5 +1,7 @@
 # AI Hedge Fund
 
+Inspired by https://github.com/virattt/ai-hedge-fund
+
 A multi-agent AI system for financial analysis and portfolio management, featuring:
 
 - **Investment Agents**: Specialized analysis agents modeled after famous investors
