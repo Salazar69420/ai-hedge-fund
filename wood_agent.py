@@ -7,7 +7,7 @@ load_dotenv()
 
 # Configuration - load from environment variables or use defaults
 ALPHA_VANTAGE_API_KEY = os.environ.get('ALPHA_VANTAGE_API_KEY', 'demo')
-DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', 'sk-39cbd05d862749d8bca6c13f1bc234ee')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
 SYMBOL = os.environ.get('SYMBOL', 'ASTS')
 
 # Define folder path
