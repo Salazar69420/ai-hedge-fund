@@ -2,14 +2,19 @@ import json
 from openai import OpenAI
 import os
 from functions import get_income_statement_data, get_balance_sheet_data, get_cash_flow_data, get_ratio_data
+from dotenv import load_dotenv
+load_dotenv()
+# Configuration - load from environment variables or use defaults
+ALPHA_VANTAGE_API_KEY = os.environ.get('ALPHA_VANTAGE_API_KEY', 'demo')
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', 'sk-39cbd05d862749d8bca6c13f1bc234ee')
+SYMBOL = os.environ.get('SYMBOL', 'ASTS')
 
 # Define folder path
 data_folder = "data"
 os.makedirs(data_folder, exist_ok=True)  # Ensure data folder exists
-symbol = os.environ.get('SYMBOL', 'ASTS')
 
 # Initialize client
-client = OpenAI(api_key="sk-39cbd05d862749d8bca6c13f1bc234ee", base_url="https://api.deepseek.com")
+client = OpenAI(api_key=DEEPSEEK_API_KEY, base_url="https://api.deepseek.com")
 model = "deepseek-chat"
 context = "Analyze the investment quality of a company using a Peter Lynch-style lens."
 
@@ -85,7 +90,7 @@ used_tools = {
 messages = [
     {"role": "system", "content": context},
     {"role": "system", "content": "You are Peter Lynch, legendary growth investor. Use a practical, GARP-focused approach, looking for understandable businesses, strong growth, reasonable valuation, and solid financial health."},
-    {"role": "user", "content": f'First, call get_ratio_data for {symbol} and summarize only the key ratios needed for Peter Lynch-style analysis.'}
+    {"role": "user", "content": f'First, call get_ratio_data for {SYMBOL} and summarize only the key ratios needed for Peter Lynch-style analysis.'}
 ]
 
 # Step 1: Get key ratios
@@ -100,7 +105,7 @@ if tool_calls:
     messages.append(response_message)
     for tool in tool_calls:
         if tool.function.name == "get_ratio_data":
-            data = get_ratio_data(symbol)
+            data = get_ratio_data(SYMBOL)
             messages.append({"role": "tool", "tool_call_id": tool.id, "content": json.dumps(data, separators=( ',', ':' ))})
             used_tools["get_ratio_data"] = True
     response = client.chat.completions.create(
@@ -112,11 +117,11 @@ if tool_calls:
     messages = [
         {"role": "system", "content": context},
         {"role": "system", "content": "You are Peter Lynch, legendary growth investor. Use a practical, GARP-focused approach, looking for understandable businesses, strong growth, reasonable valuation, and solid financial health."},
-        {"role": "user", "content": f'Key ratio summary for {symbol}: {ratio_summary}'}
+        {"role": "user", "content": f'Key ratio summary for {SYMBOL}: {ratio_summary}'}
     ]
 
 # Step 2: Income statement
-messages.append({"role": "user", "content": f'Now, call get_income_statement_data for {symbol} and summarize only the key points needed for Peter Lynch-style analysis.'})
+messages.append({"role": "user", "content": f'Now, call get_income_statement_data for {SYMBOL} and summarize only the key points needed for Peter Lynch-style analysis.'})
 response = client.chat.completions.create(
     model=model,
     messages=messages,
@@ -128,7 +133,7 @@ if tool_calls:
     messages.append(response_message)
     for tool in tool_calls:
         if tool.function.name == "get_income_statement_data":
-            data = get_income_statement_data(symbol)
+            data = get_income_statement_data(SYMBOL)
             messages.append({"role": "tool", "tool_call_id": tool.id, "content": json.dumps(data, separators=( ',', ':' ))})
             used_tools["get_income_statement_data"] = True
     response = client.chat.completions.create(
@@ -140,11 +145,11 @@ if tool_calls:
     messages = [
         {"role": "system", "content": context},
         {"role": "system", "content": "You are Peter Lynch, legendary growth investor. Use a practical, GARP-focused approach, looking for understandable businesses, strong growth, reasonable valuation, and solid financial health."},
-        {"role": "user", "content": f'Key ratio summary for {symbol}: {ratio_summary}\nIncome statement summary: {income_summary}'}
+        {"role": "user", "content": f'Key ratio summary for {SYMBOL}: {ratio_summary}\nIncome statement summary: {income_summary}'}
     ]
 
 # Step 3: Balance sheet
-messages.append({"role": "user", "content": f'Now, call get_balance_sheet_data for {symbol} and summarize only the key points needed for Peter Lynch-style analysis.'})
+messages.append({"role": "user", "content": f'Now, call get_balance_sheet_data for {SYMBOL} and summarize only the key points needed for Peter Lynch-style analysis.'})
 response = client.chat.completions.create(
     model=model,
     messages=messages,
@@ -156,7 +161,7 @@ if tool_calls:
     messages.append(response_message)
     for tool in tool_calls:
         if tool.function.name == "get_balance_sheet_data":
-            data = get_balance_sheet_data(symbol)
+            data = get_balance_sheet_data(SYMBOL)
             messages.append({"role": "tool", "tool_call_id": tool.id, "content": json.dumps(data, separators=( ',', ':' ))})
             used_tools["get_balance_sheet_data"] = True
     response = client.chat.completions.create(
@@ -168,11 +173,11 @@ if tool_calls:
     messages = [
         {"role": "system", "content": context},
         {"role": "system", "content": "You are Peter Lynch, legendary growth investor. Use a practical, GARP-focused approach, looking for understandable businesses, strong growth, reasonable valuation, and solid financial health."},
-        {"role": "user", "content": f'Key ratio summary for {symbol}: {ratio_summary}\nIncome statement summary: {income_summary}\nBalance sheet summary: {balance_summary}'}
+        {"role": "user", "content": f'Key ratio summary for {SYMBOL}: {ratio_summary}\nIncome statement summary: {income_summary}\nBalance sheet summary: {balance_summary}'}
     ]
 
 # Step 4: Cash flow
-messages.append({"role": "user", "content": f'Now, call get_cash_flow_data for {symbol} and summarize only the key points needed for Peter Lynch-style analysis.'})
+messages.append({"role": "user", "content": f'Now, call get_cash_flow_data for {SYMBOL} and summarize only the key points needed for Peter Lynch-style analysis.'})
 response = client.chat.completions.create(
     model=model,
     messages=messages,
@@ -184,7 +189,7 @@ if tool_calls:
     messages.append(response_message)
     for tool in tool_calls:
         if tool.function.name == "get_cash_flow_data":
-            data = get_cash_flow_data(symbol)
+            data = get_cash_flow_data(SYMBOL)
             messages.append({"role": "tool", "tool_call_id": tool.id, "content": json.dumps(data, separators=( ',', ':' ))})
             used_tools["get_cash_flow_data"] = True
     response = client.chat.completions.create(
@@ -196,32 +201,64 @@ if tool_calls:
     messages = [
         {"role": "system", "content": context},
         {"role": "system", "content": "You are Peter Lynch, legendary growth investor. Use a practical, GARP-focused approach, looking for understandable businesses, strong growth, reasonable valuation, and solid financial health."},
-        {"role": "user", "content": f'Key ratio summary for {symbol}: {ratio_summary}\nIncome statement summary: {income_summary}\nBalance sheet summary: {balance_summary}\nCash flow summary: {cashflow_summary}'}
+        {"role": "user", "content": f'Key ratio summary for {SYMBOL}: {ratio_summary}\nIncome statement summary: {income_summary}\nBalance sheet summary: {balance_summary}\nCash flow summary: {cashflow_summary}'}
     ]
 
 # Step 5: Final analysis
-messages.append({"role": "user", "content": f"Given the above summaries, provide a final Peter Lynch-style investment analysis for {symbol}.\n\nYour FINAL RECOMMENDATION must be one of: BUY, HOLD, SELL, or AVOID (use only one, no synonyms, and use it only once in a clearly marked 'Final Recommendation' section at the end of your output). Do not use these words anywhere else in your output. Be concise, structured, and actionable."})
+messages.append({
+    "role": "user",
+    "content": f"""Given the above summaries, provide a final Lynch-style investment analysis for {SYMBOL}.
+Your analysis must be structured as a JSON object with the following keys: "recommendation", "confidence_score", "target_price", "stop_loss_price", "reasoning", "key_growth_drivers", "risk_factors".
+
+- "recommendation": One of: BUY, HOLD, SELL, or AVOID.
+- "confidence_score": A numerical value between 0.0 (low) and 1.0 (high) representing your confidence in the recommendation.
+- "target_price": Optional. Your estimated target price. If not applicable, use null.
+- "stop_loss_price": Optional. Your estimated stop-loss price. If not applicable, use null.
+- "reasoning": Brief reasoning for your recommendation, incorporating Lynch's principles (e.g., PEG ratio, 'tenbagger' potential, understanding the business).
+- "key_growth_drivers": Optional. List of key factors driving future growth. If not applicable, use null or an empty list.
+- "risk_factors": Optional. List of key risks. If not applicable, use null or an empty list.
+
+**Important Constraints:**
+- If you provide a Target Price or Stop-Loss Price, you **must** state that it is **your persona's (Peter Lynch) estimation based *only* on the financial data and summaries provided in this interaction**. Do not cite external, unverified sources (e.g., 'analyst consensus') unless such information was explicitly part of the data given to you in previous steps.
+- Your reasoning and any price levels must be directly justifiable from the provided financial summaries.
+- Be concise and actionable.
+- Output *only* the JSON object and nothing else. Example:
+  {{
+    "recommendation": "BUY",
+    "confidence_score": 0.75,
+    "target_price": 200.00,
+    "stop_loss_price": null,
+    "reasoning": "Company is a fast grower in an expanding niche, with a low PEG ratio indicating undervaluation relative to growth.",
+    "key_growth_drivers": ["New product X launch", "International expansion"],
+    "risk_factors": ["Increased competition", "Regulatory changes"]
+  }}
+"""
+})
 response = client.chat.completions.create(
     model=model,
     messages=messages,
-    tools=tools
+    response_format={"type": "json_object"}
 )
 response_message = response.choices[0].message
-reasoning = getattr(response_message, 'reasoning_content', '')
-content = getattr(response_message, 'content', '')
+structured_output_str = response_message.content
 
-print("--------------------------------------------------------------------------------------------------------- Reasoning ---------------------------------------------------------------------------------------------")
-print(reasoning)
-print("\n------------------------------------------------------------------------------------------------------- Final Answer -------------------------------------------------------------------------------------------")
-print(content)
+print("------------------------------------------------------------------------------------------------------- Final Answer (JSON) -------------------------------------------------------------------------------------------")
+print(structured_output_str)
+
+# Attempt to parse the JSON
+try:
+    parsed_json = json.loads(structured_output_str)
+    parsed_json['agent'] = "Lynch"
+    parsed_json['ticker'] = SYMBOL
+except json.JSONDecodeError as e:
+    print(f"Error decoding JSON from LLM: {e}")
+    print(f"LLM output was: {structured_output_str}")
+    parsed_json = {"error": "Failed to parse LLM JSON output", "raw_output": structured_output_str, "agent": "Lynch", "ticker": SYMBOL}
 
 # Save to file
-output_file = os.path.join(data_folder, f"{symbol}_lynch_analysis.txt")
+output_file = os.path.join(data_folder, f"{SYMBOL}_lynch_analysis.json")
 with open(output_file, 'w', encoding='utf-8') as f:
-    f.write("---- Reasoning ----\n")
-    f.write(reasoning + "\n\n")
-    f.write("---- Final Answer ----\n")
-    f.write(content)
+    json.dump(parsed_json, f, indent=2)
 
 print(f"\nAnalysis saved to {output_file}")
 print("--------------------------------------------------------------------------------------------------------- End of Analysis ------------------------------------------------------------------------------------------")

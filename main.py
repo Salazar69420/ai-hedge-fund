@@ -19,7 +19,7 @@ def run_agent(script, symbol):
 def main():
     # List of tickers (can be loaded from a file)
     tickers = [
-    "ASTS"
+    "TSM"
     ]
     
     # Ensure data folder exists

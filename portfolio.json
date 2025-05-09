@@ -1,0 +1,55 @@
+{
+  "cash": 100000.0,
+  "positions": {
+    "AAPL": {
+      "shares": 50,
+      "avg_price": 150.0
+    },
+    "MSFT": {
+      "shares": 25,
+      "avg_price": 300.0
+    },
+    "GOOG": {
+      "shares": 10,
+      "avg_price": 2500.0
+    },
+    "TSLA": {
+      "shares": 20,
+      "avg_price": 200.0
+    }
+  },
+  "transactions": [
+    {
+      "date": "2023-01-15",
+      "ticker": "AAPL",
+      "action": "buy",
+      "shares": 50,
+      "price": 150.0,
+      "total": 7500.0
+    },
+    {
+      "date": "2023-02-10",
+      "ticker": "MSFT",
+      "action": "buy",
+      "shares": 25,
+      "price": 300.0,
+      "total": 7500.0
+    },
+    {
+      "date": "2023-03-05",
+      "ticker": "GOOG",
+      "action": "buy",
+      "shares": 10,
+      "price": 2500.0,
+      "total": 25000.0
+    },
+    {
+      "date": "2023-04-20",
+      "ticker": "TSLA",
+      "action": "buy",
+      "shares": 20,
+      "price": 200.0,
+      "total": 4000.0
+    }
+  ]
+} 
